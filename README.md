@@ -1,4 +1,3 @@
-# skilllens
 # SkillLens
 
 **Intelligent Skill Gap Analyzer for Tech Roles**
