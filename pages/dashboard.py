@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
-from modules.demand_score import get_demand_score, get_demand_emoji
+from modules.demand_score import get_demand_score
 from modules.role_recommender import get_similar_roles, get_skill_clusters
 
 # ── GUARD ─────────────────────────────────────────────
@@ -37,7 +37,7 @@ if loaded_report:
         '<div style="background:rgba(26,60,35,0.06); border:1px solid rgba(26,60,35,0.15); '
         'border-radius:3px; padding:0.7rem 1.2rem; margin-bottom:1.5rem; '
         'display:flex; align-items:center; gap:0.8rem;">'
-        '<span style="font-size:0.85rem;">📋</span>'
+        ''
         '<span style="font-size:0.78rem; font-family:Inter,sans-serif; color:rgba(26,60,35,0.6);">Viewing saved report: </span>'
         '<span style="font-family:Fraunces,serif; font-weight:600; color:#1A3C23; font-size:0.85rem;">'
         + loaded_report +
@@ -59,7 +59,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── SCORE HERO ROW ────────────────────────────────────
-c1, c2, c3, c4, c5 = st.columns([1.8, 1, 1, 1, 1.4], gap="medium")
+c1, c2, c3, c4, c5 = st.columns([1.8, 1, 1, 1, 1], gap="medium")
 with c1:
     st.markdown(f"""
     <div style="background:rgba(255,255,255,0.45); border:1px solid rgba(26,60,35,0.1);
@@ -241,20 +241,24 @@ if missing:
     st.markdown('<div style="font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:rgba(26,60,35,0.35); font-family:Inter,sans-serif; margin-bottom:1.5rem;">Market Demand for Missing Skills</div>', unsafe_allow_html=True)
     cols = st.columns(4, gap="medium")
     for i, skill in enumerate(missing[:8]):
-        d     = get_demand_score(skill)
-        emoji = get_demand_emoji(skill)
-        bar_c = "#1A3C23" if d >= 80 else "rgba(26,60,35,0.4)" if d >= 60 else "rgba(26,60,35,0.2)"
+        d        = get_demand_score(skill)
+        bar_c    = "#1A3C23" if d >= 80 else "rgba(26,60,35,0.4)" if d >= 60 else "rgba(26,60,35,0.2)"
+        tier     = "High" if d >= 80 else "Medium" if d >= 60 else "Low"
+        tier_col = "#2A6B3A" if d >= 80 else "#7A5C10" if d >= 60 else "rgba(26,60,35,0.35)"
         with cols[i % 4]:
             st.markdown(f"""
             <div style="background:rgba(255,255,255,0.4); border:1px solid rgba(26,60,35,0.09);
                         border-radius:3px; padding:1.2rem; margin-bottom:0.7rem;">
-                <div style="font-size:1.2rem; margin-bottom:0.5rem;">{emoji}</div>
                 <div style="font-family:'Fraunces',serif; font-weight:600; font-size:0.9rem;
-                            color:#1A3C23; margin-bottom:0.5rem;">{skill}</div>
-                <div style="background:rgba(26,60,35,0.08); border-radius:2px; height:3px; margin-bottom:0.4rem;">
+                            color:#1A3C23; margin-bottom:0.6rem;">{skill}</div>
+                <div style="background:rgba(26,60,35,0.08); border-radius:2px; height:3px; margin-bottom:0.5rem;">
                     <div style="background:{bar_c}; width:{d}%; height:3px; border-radius:2px;"></div>
                 </div>
-                <div style="font-size:0.7rem; color:rgba(26,60,35,0.4); font-family:Inter,sans-serif;">{d}/100 demand</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:0.68rem; color:rgba(26,60,35,0.38); font-family:Inter,sans-serif;">{d}/100 demand</div>
+                    <div style="font-size:0.6rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+                                color:{tier_col}; font-family:Inter,sans-serif;">{tier}</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
