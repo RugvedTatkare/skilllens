@@ -161,7 +161,3 @@ This app is deployed on **Streamlit Cloud**.
 | Body font | Inter (sans-serif) |
 
 ---
-
-## License
-
-MIT
